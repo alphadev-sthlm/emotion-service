@@ -1,4 +1,4 @@
-package se.alphadev
+package se.alphadev.rest
 
 import com.squareup.okhttp.MediaType
 import com.squareup.okhttp.OkHttpClient

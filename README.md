@@ -6,7 +6,7 @@ mvn spring-boot:run
 
 Please note that `@` must be present before `ABSOLUTE_PATH_OF_FILE`
 
-``
+```
 curl -H "Content-Type: application/octet-stream" -v -X POST localhost:8080/emotions --data-binary @ABSOLUTE_PATH_OF_FILE -o /tmp/new-image.jpg
 ```
 

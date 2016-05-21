@@ -41,6 +41,7 @@ class LabelEmotionRenderer : EmotionRenderer {
             g.fillRect(face.rect.x, face.rect.y, textWidth + 2, fontMetrics.height + 2)
 
             g.color = Color.WHITE
+            // TODO: Localize emotion
             g.drawString(face.emotion, face.rect.x + 1, face.rect.y + fontMetrics.height/2 + 5)
         }
 
@@ -95,7 +96,6 @@ class EmotionService {
     fun parseFaces(json: String): List<Face> {
         val jsonFaces = JSONTokener(json).nextValue()
         if (jsonFaces !is JSONArray) {
-            println("Not an JSONarray")
             return listOf()
         }
 
@@ -103,7 +103,6 @@ class EmotionService {
 
         for (jsonFace in jsonFaces) {
             if (jsonFace !is JSONObject) {
-                println("Not json object")
                 continue
             }
 
@@ -115,7 +114,6 @@ class EmotionService {
             val scores = arrayListOf<Pair<String, Double>>()
 
             for (emo in jsonScores.keys()) {
-                // TODO: Localize emotion
                 scores.add(Pair(emo, jsonScores.getDouble(emo)))
             }
 

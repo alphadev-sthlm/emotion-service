@@ -1,3 +1,5 @@
+# Emotion Service [![Build Status](https://travis-ci.org/alphadev-sthlm/emotion-service/emotion-service.png)](https://travis-ci.org/alphadev-sthlm/emotion-service)
+
 # Service startup
 
 mvn spring-boot:run

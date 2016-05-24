@@ -1,4 +1,4 @@
-# Emotion Service [![Build Status](https://travis-ci.org/alphadev-sthlm/emotion-service/emotion-service.png)](https://travis-ci.org/alphadev-sthlm/emotion-service)
+# Emotion Service [![Build Status](https://travis-ci.org/alphadev-sthlm/emotion-service.png)](https://travis-ci.org/alphadev-sthlm/emotion-service)
 
 # Service startup
 

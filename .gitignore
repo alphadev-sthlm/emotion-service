@@ -2,3 +2,6 @@
 .mvn/
 target/
 Happy-O-Meter.iml
+.classpath
+.project
+.settings/

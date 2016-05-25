@@ -10,49 +10,16 @@ import org.json.JSONTokener
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import se.alphadev.image.Face
+import se.alphadev.image.LabelEmotionRenderer
+import se.alphadev.image.Rect
 import java.awt.Color
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.util.*
 import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
-data class Rect(val x: Int, val y: Int, val width: Int, val height: Int)
-
-data class Face(val emotion: String, val rect: Rect)
-
-data class ImageMimeType(val mimeType: String)
-
-interface EmotionRenderer {
-    fun render(image: ByteArray, faces: List<Face>): Pair<ByteArray, ImageMimeType>
-}
-
-class LabelEmotionRenderer : EmotionRenderer {
-    override fun render(image: ByteArray, faces: List<Face>): Pair<ByteArray, ImageMimeType> {
-        val mimg = ImageIO.read(ByteArrayInputStream(image))
-
-        val g = mimg.createGraphics()
-        val fontMetrics = g.fontMetrics
-
-        // TODO: Fix drawing of label, kind of awkward - must be a better way
-        for (face in faces) {
-            val textWidth = fontMetrics.stringWidth(face.emotion)
-            g.color = Color.BLACK
-            g.fillRect(face.rect.x, face.rect.y, textWidth + 2, fontMetrics.height + 2)
-
-            g.color = Color.WHITE
-            // TODO: Localize emotion
-            g.drawString(face.emotion, face.rect.x + 1, face.rect.y + fontMetrics.height/2 + 5)
-        }
-
-        g.dispose()
-
-        val newImage = ByteArrayOutputStream(image.size)
-        ImageIO.write(mimg, "jpg", newImage)
-
-        return Pair(newImage.toByteArray(), ImageMimeType("image/jpeg"))
-    }
-}
 
 // TODO: Add rate limiting
 // TODO: Error handling
@@ -86,6 +53,7 @@ class EmotionService {
 
         val emoResp = client.newCall(emoReq).execute();
         val faces = parseFaces(emoResp.body().string())
+        println(faces)
         val newImage = LabelEmotionRenderer().render(imgBytes, faces)
 
         resp.addHeader("content-type", newImage.second.mimeType)
@@ -118,7 +86,7 @@ class EmotionService {
             }
 
             val strongestEmotion = scores.maxBy { it.second }
-            faces.add(Face(strongestEmotion!!.first, Rect(x, y, w, h))) // TODO: Dangerous
+            faces.add(Face(scores, Rect(x, y, w, h))) // TODO: Dangerous
         }
 
         return faces

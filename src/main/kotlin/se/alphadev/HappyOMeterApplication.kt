@@ -6,6 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 open class HappyOMeterApplication
 
-fun main(args: Array<String>) {
-    SpringApplication.run(HappyOMeterApplication::class.java, *args)
-}
+    fun main(args: Array<String>) {
+        SpringApplication.run(HappyOMeterApplication::class.java, *args)
+    }

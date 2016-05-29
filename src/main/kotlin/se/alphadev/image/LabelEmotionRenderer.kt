@@ -1,14 +1,13 @@
 package se.alphadev.image
 
-import se.alphadev.image.ImageMimeType
 import java.awt.Color
-import java.awt.Font
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.util.*
 import javax.imageio.ImageIO
 
 class LabelEmotionRenderer : EmotionRenderer {
-    override fun render(image: ByteArray, faces: List<Face>): Pair<ByteArray, ImageMimeType> {
+    override fun render(image: ByteArray, faces: List<Face>, locale: Locale): Pair<ByteArray, ImageMimeType> {
         val mimg = ImageIO.read(ByteArrayInputStream(image))
 
         val g = mimg.createGraphics()

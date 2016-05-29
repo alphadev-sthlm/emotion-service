@@ -11,13 +11,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import se.alphadev.image.Face
-import se.alphadev.image.LabelEmotionRenderer
+import se.alphadev.image.MemeEmotionRenderer
 import se.alphadev.image.Rect
-import java.awt.Color
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.util.*
-import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -54,7 +49,8 @@ class EmotionService {
         val emoResp = client.newCall(emoReq).execute();
         val faces = parseFaces(emoResp.body().string())
         println(faces)
-        val newImage = LabelEmotionRenderer().render(imgBytes, faces)
+
+        val newImage = MemeEmotionRenderer().render(imgBytes, faces, req.locale)
 
         resp.addHeader("content-type", newImage.second.mimeType)
         resp.outputStream.write(newImage.first)

@@ -1,8 +1,7 @@
 package se.alphadev.image
 
-import se.alphadev.image.Face
-import se.alphadev.image.ImageMimeType
+import java.util.*
 
 interface EmotionRenderer {
-    fun render(image: ByteArray, faces: List<Face>): Pair<ByteArray, ImageMimeType>
+    fun render(image: ByteArray, faces: List<Face>, locale: Locale): Pair<ByteArray, ImageMimeType>
 }

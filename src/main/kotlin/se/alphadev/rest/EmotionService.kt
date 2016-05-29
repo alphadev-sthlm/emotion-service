@@ -7,6 +7,7 @@ import com.squareup.okhttp.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -22,6 +23,9 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 class EmotionService {
     val client = OkHttpClient()
+
+    @Autowired
+    lateinit var renderer: MemeEmotionRenderer
 
     @Value("\${emo-api.url}")
     var emoUrl: String = ""
@@ -50,7 +54,7 @@ class EmotionService {
         val faces = parseFaces(emoResp.body().string())
         println(faces)
 
-        val newImage = MemeEmotionRenderer().render(imgBytes, faces, req.locale)
+        val newImage = renderer.render(imgBytes, faces, req.locale)
 
         resp.addHeader("content-type", newImage.second.mimeType)
         resp.outputStream.write(newImage.first)

@@ -1,5 +1,6 @@
 package se.alphadev.image
 
+import org.springframework.stereotype.Component
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -10,6 +11,7 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 import javax.imageio.ImageIO
 
+@Component
 class MemeEmotionRenderer : EmotionRenderer {
     val textToImageRatio = 16
 

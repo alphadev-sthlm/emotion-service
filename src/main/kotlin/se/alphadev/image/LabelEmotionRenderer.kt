@@ -1,11 +1,13 @@
 package se.alphadev.image
 
+import org.springframework.stereotype.Component
 import java.awt.Color
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.*
 import javax.imageio.ImageIO
 
+@Component
 class LabelEmotionRenderer : EmotionRenderer {
     override fun render(image: ByteArray, faces: List<Face>, locale: Locale): Pair<ByteArray, ImageMimeType> {
         val mimg = ImageIO.read(ByteArrayInputStream(image))

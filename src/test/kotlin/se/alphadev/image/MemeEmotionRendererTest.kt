@@ -28,19 +28,26 @@ class MemeEmotionRendererTest {
         val faces = listOf<Face>(Face(arrayListOf(elements), rect))
 
         var img: BufferedImage
-        try {
-            val file = File("src/test/resources/test.jpg")
-//            println(file.canonicalPath)
-            img = ImageIO.read(file);
-            val baos = ByteArrayOutputStream();
-            ImageIO.write(img, "jpg", baos );
-            val imageInByte = baos.toByteArray();
-            val (newImage, mime) = MemeEmotionRenderer().render(imageInByte, faces, Locale.ENGLISH)
-            Files.write(Paths.get("target/testout.jpg"), newImage);
+        val folder = File("src/test/resources")
+        //        val file = File("src/test/resources/test.jpg")
+        folder.listFiles()
+                .filter { it.isFile }
+                .filter { it.extension.equals("jpg") }
+                .forEachIndexed { i, file ->
 
-        } catch (e: Exception) {
-            throw e
-        }
+                    try {
+                        println(file.canonicalPath)
+                        img = ImageIO.read(file);
+                        val baos = ByteArrayOutputStream();
+                        ImageIO.write(img, "jpg", baos);
+                        val imageInByte = baos.toByteArray();
+                        val (newImage, mime) = MemeEmotionRenderer().render(imageInByte, faces, Locale.ENGLISH)
+                        Files.write(Paths.get("target/testout$i.jpg"), newImage);
+
+                    } catch (e: Exception) {
+                        throw e
+                    }
+                }
 
     }
 

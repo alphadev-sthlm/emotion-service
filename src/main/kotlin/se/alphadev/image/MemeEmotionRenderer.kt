@@ -74,7 +74,7 @@ class MemeEmotionRenderer : EmotionRenderer {
     }
 
     private fun drawText(g: Graphics2D, text: String, x: Int, y: Int): Pair<Int, Int> {
-        val outline = g.fontMetrics.stringWidth("i") / 8
+        val outline = Math.max(g.fontMetrics.stringWidth("i") / 8, 1)
 
         //outline
         g.color = Color.BLACK

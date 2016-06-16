@@ -12,7 +12,7 @@ import java.util.*
 import javax.imageio.ImageIO
 
 @Component
-class MemeEmotionRenderer : EmotionRenderer {
+open class MemeEmotionRenderer : EmotionRenderer {
     val textToImageRatio = 16
 
     override fun render(image: ByteArray, faces: List<Face>, locale: Locale): Pair<ByteArray, ImageMimeType> {
@@ -22,7 +22,8 @@ class MemeEmotionRenderer : EmotionRenderer {
         val titleHeight = mimg.height / textToImageRatio
         g.font = Font("Helvetica", 1, titleHeight)
 
-        val emo = EmotionType.valueOf(getMostPrevalentEmotion(faces)).getLocalized(locale)
+        val emotionType = EmotionType.valueOf(getMostPrevalentEmotion(faces))
+        val emo = emotionType.getLocalized(locale)
         val headerWidth = g.fontMetrics.stringWidth(emo)
 
         //TOP
@@ -31,17 +32,14 @@ class MemeEmotionRenderer : EmotionRenderer {
         drawText(g, emo, topX, topY)
 
         //BOTTOM
-        // TODO generate or lookup text
-        val text = "Bitters humblebrag bespoke vinyl jean shorts ugh." +
-                " Gochujang roof party semiotics fap." +
-                " Plaid church-key trust fund, four dollar toast beard pork belly twee.";
+        val text = emotionType.getDescription(locale)
         val  mockStr = text.toUpperCase()
         val textHeight = titleHeight - titleHeight / 3
         g.font = Font("Helvetica", 1, textHeight)
 
-        var acc = textAsRows(g, mimg, mockStr)
+        val acc = textAsRows(g, mimg, mockStr)
 
-        var nextY = mimg.height - (acc.size * titleHeight) + titleHeight/2
+        val nextY = mimg.height - (acc.size * titleHeight) + titleHeight/2
         drawRows(acc, g, mimg, nextY, titleHeight)
 
         g.dispose()
@@ -53,7 +51,7 @@ class MemeEmotionRenderer : EmotionRenderer {
     private fun drawRows(acc: MutableList<String>, g: Graphics2D, mimg: BufferedImage, startY: Int, titleHeight: Int) {
         var nextY = startY
         for (row in acc) {
-            var nextX = mimg.width / 2 - g.fontMetrics.stringWidth(row) / 2
+            val nextX = mimg.width / 2 - g.fontMetrics.stringWidth(row) / 2
 //            println("x$nextX y$nextY  $row")
             drawText(g, row, nextX, nextY)
             nextY += titleHeight
@@ -61,7 +59,7 @@ class MemeEmotionRenderer : EmotionRenderer {
     }
 
     private fun textAsRows(g: Graphics2D, mimg: BufferedImage, mockStr: String): MutableList<String> {
-        var acc = mutableListOf<String>()
+        val acc = mutableListOf<String>()
         var nextRow = ""
         for (word in mockStr.split(" ")) {
             if (g.fontMetrics.stringWidth(nextRow + " " + word) > mimg.width) {
@@ -113,8 +111,7 @@ class MemeEmotionRenderer : EmotionRenderer {
         var y = 25;
         val line_spacing = 25;
         for (font in fonts) {
-            //            val font = Font(fontStr, Font.BOLD, font_size);
-            g.setFont(Font(font.fontName, 1, font_size));
+            g.font = Font(font.fontName, 1, font_size);
             g.drawString(font.fontName, x, y);
             y += line_spacing;
         }

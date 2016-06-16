@@ -29,10 +29,6 @@ class EmotionRendererTest {
     @Test
     fun render() {
 
-        val rect = Rect(0, 0, 0, 0)
-        val elements = Pair(EmotionType.surprise.name, 0.9)
-        val faces = listOf<Face>(Face(arrayListOf(elements), rect))
-
         var img: BufferedImage
         val folder = File("src/test/resources")
         //        val file = File("src/test/resources/test.jpg")
@@ -49,7 +45,7 @@ class EmotionRendererTest {
                             val baos = ByteArrayOutputStream();
                             ImageIO.write(img, "jpg", baos);
                             val imageInByte = baos.toByteArray();
-                            val (newImage, mime) = renderer.render(imageInByte, faces, Locale.ENGLISH)
+                            val (newImage, mime) = renderer.render(imageInByte, getRandomFaces(), Locale.ENGLISH)
                             val rendererName = renderer.javaClass.simpleName
                             Files.write(Paths.get("target/test_$rendererName$i.jpg"), newImage);
 
@@ -58,6 +54,19 @@ class EmotionRendererTest {
                         }
                     }
         }
+    }
+
+    private fun getRandomFaces(): List<Face> {
+        val random = Random()
+        val numFaces = random.nextInt(10)
+        val faces = mutableListOf<Face>()
+        for (i in 1..numFaces) {
+            val emotionType = EmotionType.values().get(random.nextInt(EmotionType.values().size))
+            val rect = Rect(0, i*50, 0, 0)
+            val elements = Pair(emotionType.name, random.nextDouble())
+            faces.add(Face(arrayListOf(elements), rect));
+        }
+        return faces
     }
 
 }

@@ -6,7 +6,7 @@ deploy:
   password:
     secure: Yk869vQHmSXO60IiX3nfWQn1zofl0Vw+XMMJJTW/pRZUJDuZK3+c440PNS1Qua+s8wSGK5Ed6HeWv1UBWBhu9004A6An0qlyARN9KoMm6HVnAhO8D5eHt2UhodL6n6LGmCeAqT1lcHhNLOXn32Z33YgOzYDV0k3UTUxDGC1atZOsavK2f4doMyYks77mffoLnqR/cysSxE5NxRYcwq7+3zU4c552rUE7mV/gOWlS5o7enXtrFQ8Rn3kZUsYzgTkDCz9VQBLa7gaBD2EYsWx892YQP2nzAhYp6hjxWNQ2RtpRlNH5yvMdXQhI+fOgPlDCROOf6Ke6QUPpXdKOOTElPjOp9u3qG4AW3A2ctVlXNUfj+sat7d9qS7j+rSUBNgnhIYtfTmPMklETdHvJi6Qt56bR/eIwQzuV0nwBwcsbAaTA/siKRwgJ29eNfsGHPWb9HaE8CqISm4gBl7+7cukYi4BwQANP8aDX+Jrq5QIbe79dFIt7knJdZ9ndxotcyAEbJp8RyrjLClUUxy2dLe2GZ1HIH35/sR3YEADJgjJR6HmumdB9Tnq7sKdB64ZtnsnQI9+TNHaEzyjh0jYMOVRNoLic+PI5xrXLvAWyp8rcuRrD2Gtv1hSgikVbmWAEO0roE2Kr79IQR3AFDyXE4PiVVE8E8hSGNDqP9JLMO1zD9vc=
   app: 
-    openshift: emotions
+    openshift: emotionstomcat
   domain: alphadevsthlm
   on:
     repo: alphadev-sthlm/emotion-service

@@ -10,6 +10,7 @@ import org.json.JSONTokener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import se.alphadev.image.Face
 import se.alphadev.image.MemeEmotionRenderer
@@ -33,7 +34,7 @@ class EmotionService {
     @Value("\${emo-api.key}")
     var emoKey: String = ""
 
-    @RequestMapping("/emotions")
+    @RequestMapping("/emotions", method = arrayOf(RequestMethod.POST))
     fun emotions(req: HttpServletRequest, resp: HttpServletResponse) {
         val contentType = req.getHeader("content-type")
         val size = Integer.parseInt(req.getHeader("content-length"))

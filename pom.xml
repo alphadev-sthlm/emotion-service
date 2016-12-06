@@ -38,13 +38,11 @@
 			<artifactId>kotlin-stdlib</artifactId>
 			<version>${kotlin.version}</version>
 		</dependency>
-<!--
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-maven-plugin</artifactId>
             <version>0.4.13</version>
         </dependency>
--->
         <dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
@@ -93,7 +91,6 @@
 					</execution>
 				</executions>
 			</plugin>
-<!--
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
@@ -109,15 +106,9 @@
                             <directory>${project.build.directory}</directory>
                             <include>${project.build.finalName}.jar</include>
                         </resource>
-                        <resource>
-                            <targetPath>/config</targetPath>
-                            <directory>${project.basedir}</directory>
-                            <include>config-docker.yml</include>
-                        </resource>
                     </resources>
                 </configuration>
             </plugin>
--->
 		</plugins>
 	</build>
 	

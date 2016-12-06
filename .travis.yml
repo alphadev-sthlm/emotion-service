@@ -1,5 +1,6 @@
 language: java
 sudo: false
+jdk: oraclejdk8
 deploy:
   provider: openshift
   user: fredrik.bergstrom@alphadev.se

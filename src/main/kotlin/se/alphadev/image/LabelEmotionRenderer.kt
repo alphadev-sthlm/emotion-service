@@ -11,19 +11,19 @@ import javax.imageio.ImageIO
 class LabelEmotionRenderer : EmotionRenderer {
     override fun render(image: ByteArray, faces: List<Face>, locale: Locale): Pair<ByteArray, ImageMimeType> {
         val mimg = ImageIO.read(ByteArrayInputStream(image))
-
         val g = mimg.createGraphics()
         val fontMetrics = g.fontMetrics
 
         // TODO: Fix drawing of label, kind of awkward - must be a better way
         for (face in faces) {
-            val textWidth = fontMetrics.stringWidth(face.strongestEmotion())
+            val emotion = EmotionType.valueOf(face.strongestEmotion()).getLocalized(locale)
+            val textWidth = fontMetrics.stringWidth(emotion)
+
             g.color = Color.BLACK
             g.fillRect(face.rect.x, face.rect.y, textWidth + 2, fontMetrics.height + 2)
 
             g.color = Color.WHITE
-            // TODO: Localize emotion
-            g.drawString(face.strongestEmotion(), face.rect.x + 1, face.rect.y + fontMetrics.height/2 + 5)
+            g.drawString(emotion, face.rect.x + 1, face.rect.y + fontMetrics.height/2 + 5)
         }
 
         g.dispose()

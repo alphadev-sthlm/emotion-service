@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 import se.alphadev.image.Face
 import se.alphadev.image.MemeEmotionRenderer
 import se.alphadev.image.Rect
+import java.io.InputStream
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -43,12 +45,12 @@ class EmotionService {
 
         if (size <= 0 || size > MAX_IMAGE_SIZE) {
             LOG.error("Invalid request image size: " + size)
-            resp.setStatus(400)
+            resp.status = 400
             return
         }
 
-        val imgBytes = req.inputStream.readBytes(size)
-        val img = RequestBody.create(MediaType.parse(contentType), imgBytes)
+        val imgBytes = readImageData(contentType, req.inputStream, size)
+        val img = RequestBody.create(MediaType.parse(contentType.replace(";base64", "")), imgBytes)
 
         val emoReq = Request.Builder()
             .addHeader("Ocp-Apim-Subscription-Key", emoKey)
@@ -65,7 +67,7 @@ class EmotionService {
         resp.outputStream.write(newImage.first)
     }
 
-    fun parseFaces(json: String): List<Face> {
+    private fun parseFaces(json: String): List<Face> {
         val jsonFaces = JSONTokener(json).nextValue()
         if (jsonFaces !is JSONArray) {
             return listOf()
@@ -95,5 +97,15 @@ class EmotionService {
         }
 
         return faces
+    }
+
+    private fun readImageData(contentType: String, input: InputStream, size: Int): ByteArray {
+        val bytes = input.readBytes(size)
+
+        if (contentType.endsWith(";base64")) {
+            return Base64.getDecoder().decode(bytes)
+        }
+
+        return bytes
     }
 }

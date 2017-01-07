@@ -49,9 +49,9 @@ class EmotionService {
             .addHeader("Ocp-Apim-Subscription-Key", emoKey)
             .url(emoUrl)
             .post(img)
-            .build();
+            .build()
 
-        val emoResp = client.newCall(emoReq).execute();
+        val emoResp = client.newCall(emoReq).execute()
         val faces = parseFaces(emoResp.body().string())
         println(faces)
 
@@ -75,10 +75,12 @@ class EmotionService {
                 continue
             }
 
-            val x = jsonFace.getJSONObject("faceRectangle").getInt("left")
-            val y = jsonFace.getJSONObject("faceRectangle").getInt("top")
-            val w = jsonFace.getJSONObject("faceRectangle").getInt("width")
-            val h = jsonFace.getJSONObject("faceRectangle").getInt("height")
+            val faceRect = jsonFace.getJSONObject("faceRectangle")
+            val x = faceRect.getInt("left")
+            val y = faceRect.getInt("top")
+            val w = faceRect.getInt("width")
+            val h = faceRect.getInt("height")
+
             val jsonScores = jsonFace.getJSONObject("scores")
             val scores = arrayListOf<Pair<String, Double>>()
 
@@ -86,7 +88,6 @@ class EmotionService {
                 scores.add(Pair(emo, jsonScores.getDouble(emo)))
             }
 
-            val strongestEmotion = scores.maxBy { it.second }
             faces.add(Face(scores, Rect(x, y, w, h))) // TODO: Dangerous
         }
 

@@ -1,25 +1,19 @@
 package se.alphadev.rest
 
-import com.squareup.okhttp.MediaType
-import com.squareup.okhttp.OkHttpClient
-import com.squareup.okhttp.Request
-import com.squareup.okhttp.RequestBody
-import org.json.JSONArray
-import org.json.JSONObject
-import org.json.JSONTokener
+import com.squareup.okhttp.*
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import se.alphadev.image.Face
-import se.alphadev.image.MemeEmotionRenderer
-import se.alphadev.image.Rect
 import java.io.InputStream
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.apache.http.HttpVersion.HTTP_1_1
+import com.squareup.okhttp.Protocol
+import org.springframework.util.MimeType
+
 
 @RestController
 class EmotionService {
@@ -29,9 +23,6 @@ class EmotionService {
 
     val LOG = LoggerFactory.getLogger("EmotionService")
 
-    @Autowired
-    lateinit var renderer: MemeEmotionRenderer
-
     @Value("\${emo-api.url}")
     var emoUrl: String = ""
 
@@ -40,13 +31,14 @@ class EmotionService {
 
     @RequestMapping("/emotions", method = arrayOf(RequestMethod.POST))
     fun emotions(req: HttpServletRequest, resp: HttpServletResponse) {
+
         val contentType = req.getHeader("content-type")
         val size = Integer.parseInt(req.getHeader("content-length"))
 
         if (size <= 0 || size > MAX_IMAGE_SIZE) {
             LOG.error("Invalid request image size: " + size)
-            resp.status = 400
-            return
+            resp.status = 500
+            return;
         }
 
         val imgBytes = readImageData(contentType, req.inputStream, size)
@@ -58,45 +50,24 @@ class EmotionService {
             .post(img)
             .build()
 
-        val emoResp = client.newCall(emoReq).execute()
-        val faces = parseFaces(emoResp.body().string())
+        val empRes = client.newCall(emoReq).execute()
+        val empResBody = empRes.body().string()
 
-        val newImage = renderer.render(imgBytes, faces, req.locale)
+        LOG.info("Got response {} from {}", empRes , emoUrl)
+        LOG.info("... with body {}", empResBody)
 
-        resp.addHeader("content-type", newImage.second.mimeType)
-        resp.outputStream.write(newImage.first)
-    }
+        val responseBody = ResponseBody.create(
+                MediaType.parse(empRes.header("content-type")), empResBody)
 
-    private fun parseFaces(json: String): List<Face> {
-        val jsonFaces = JSONTokener(json).nextValue()
-        if (jsonFaces !is JSONArray) {
-            return listOf()
+        LOG.info("... responseBody {}", responseBody.string())
+
+        if(empRes.isSuccessful) {
+            resp.addHeader("content-type", empRes.header("content-type"))
+            resp.outputStream.println( empResBody )
+        } else {
+            resp.status = 500
         }
-
-        val faces = arrayListOf<Face>()
-
-        for (jsonFace in jsonFaces) {
-            if (jsonFace !is JSONObject) {
-                continue
-            }
-
-            val faceRect = jsonFace.getJSONObject("faceRectangle")
-            val x = faceRect.getInt("left")
-            val y = faceRect.getInt("top")
-            val w = faceRect.getInt("width")
-            val h = faceRect.getInt("height")
-
-            val jsonScores = jsonFace.getJSONObject("scores")
-            val scores = arrayListOf<Pair<String, Double>>()
-
-            for (emo in jsonScores.keys()) {
-                scores.add(Pair(emo, jsonScores.getDouble(emo)))
-            }
-
-            faces.add(Face(scores, Rect(x, y, w, h)))
-        }
-
-        return faces
+        resp.flushBuffer()
     }
 
     private fun readImageData(contentType: String, input: InputStream, size: Int): ByteArray {

@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-open class HappyOMeterApplication
+open class EmotionApplication
 
     fun main(args: Array<String>) {
-        SpringApplication.run(HappyOMeterApplication::class.java, *args)
+        SpringApplication.run(EmotionApplication::class.java, *args)
     }

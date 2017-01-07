@@ -7,6 +7,7 @@ import com.squareup.okhttp.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,10 +21,13 @@ import javax.servlet.http.HttpServletResponse
 
 // TODO: Add rate limiting
 // TODO: Error handling
-// TODO: Check image size - 4MB in emo service?
 @RestController
 class EmotionService {
     val client = OkHttpClient()
+
+    val MAX_IMAGE_SIZE = 4 * 1024 * 1024
+
+    val LOG = LoggerFactory.getLogger("EmotionService")
 
     @Autowired
     lateinit var renderer: MemeEmotionRenderer
@@ -38,8 +42,11 @@ class EmotionService {
     fun emotions(req: HttpServletRequest, resp: HttpServletResponse) {
         val contentType = req.getHeader("content-type")
         val size = Integer.parseInt(req.getHeader("content-length"))
-        if (size <= 0) {
-            throw RuntimeException("Invalid content length: " + size)
+
+        if (size <= 0 || size > MAX_IMAGE_SIZE) {
+            LOG.error("Invalid request image size: " + size)
+            resp.setStatus(400)
+            return
         }
 
         val imgBytes = req.inputStream.readBytes(size)
@@ -53,7 +60,6 @@ class EmotionService {
 
         val emoResp = client.newCall(emoReq).execute()
         val faces = parseFaces(emoResp.body().string())
-        println(faces)
 
         val newImage = renderer.render(imgBytes, faces, req.locale)
 
@@ -61,7 +67,6 @@ class EmotionService {
         resp.outputStream.write(newImage.first)
     }
 
-    // TODO: Use ObjectMapper for serializeation instead - this is very dirty
     fun parseFaces(json: String): List<Face> {
         val jsonFaces = JSONTokener(json).nextValue()
         if (jsonFaces !is JSONArray) {

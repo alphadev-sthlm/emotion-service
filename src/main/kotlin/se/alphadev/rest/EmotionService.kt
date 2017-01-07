@@ -19,8 +19,6 @@ import se.alphadev.image.Rect
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-// TODO: Add rate limiting
-// TODO: Error handling
 @RestController
 class EmotionService {
     val client = OkHttpClient()
@@ -93,7 +91,7 @@ class EmotionService {
                 scores.add(Pair(emo, jsonScores.getDouble(emo)))
             }
 
-            faces.add(Face(scores, Rect(x, y, w, h))) // TODO: Dangerous
+            faces.add(Face(scores, Rect(x, y, w, h)))
         }
 
         return faces

@@ -33,7 +33,7 @@ class EmotionApplicationTests {
         ImageIO.write( ImageIO.read(file), "jpg", baos);
 
         val emoReq = Request.Builder()
-                .url("http://localhost:8080/emotions")
+                .url("http://localhost:8090/emotions")
                 .post(RequestBody.create( MediaType.parse("application/octet-stream"), baos.toByteArray() ))
                 .build()
 

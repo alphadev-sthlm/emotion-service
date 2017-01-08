@@ -6,3 +6,4 @@ Happy-O-Meter.iml
 .project
 .settings/
 travis.log
+*.iml

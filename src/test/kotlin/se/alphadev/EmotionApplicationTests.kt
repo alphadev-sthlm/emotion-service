@@ -6,6 +6,7 @@ import com.squareup.okhttp.Request
 import com.squareup.okhttp.RequestBody
 import org.bouncycastle.asn1.cms.CMSAttributes.contentType
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.SpringApplicationConfiguration
@@ -25,6 +26,7 @@ class EmotionApplicationTests {
     val client = OkHttpClient()
 
 	@Test
+    @Ignore
 	fun contextLoads() {
 
         val file = File("src/test/resources/test1.jpg")
